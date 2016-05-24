@@ -66,6 +66,7 @@
             TempDGV.DataSource = DtArray(i)
             Dim CurDate As Date = DateAdd(DateInterval.Day, i, FirstOfMonth)
             TempDGV.Columns(0).HeaderText = Format(CurDate, "dd-MMM")
+            TempDGV.Tag = Format(CurDate, "dd-MMM-yyyy")
             TempDGV.Visible = True
             i += 1
 
@@ -81,6 +82,43 @@
     End Sub
 
     Private Sub DataGridView7_DoubleClick(sender As Object, e As EventArgs) Handles DataGridView9.DoubleClick, DataGridView8.DoubleClick, DataGridView7.DoubleClick, DataGridView6.DoubleClick, DataGridView5.DoubleClick, DataGridView42.DoubleClick, DataGridView41.DoubleClick, DataGridView40.DoubleClick, DataGridView4.DoubleClick, DataGridView39.DoubleClick, DataGridView38.DoubleClick, DataGridView37.DoubleClick, DataGridView36.DoubleClick, DataGridView35.DoubleClick, DataGridView34.DoubleClick, DataGridView33.DoubleClick, DataGridView32.DoubleClick, DataGridView31.DoubleClick, DataGridView30.DoubleClick, DataGridView3.DoubleClick, DataGridView29.DoubleClick, DataGridView28.DoubleClick, DataGridView27.DoubleClick, DataGridView26.DoubleClick, DataGridView25.DoubleClick, DataGridView24.DoubleClick, DataGridView23.DoubleClick, DataGridView22.DoubleClick, DataGridView21.DoubleClick, DataGridView20.DoubleClick, DataGridView2.DoubleClick, DataGridView19.DoubleClick, DataGridView18.DoubleClick, DataGridView17.DoubleClick, DataGridView16.DoubleClick, DataGridView15.DoubleClick, DataGridView14.DoubleClick, DataGridView13.DoubleClick, DataGridView12.DoubleClick, DataGridView11.DoubleClick, DataGridView10.DoubleClick, DataGridView1.DoubleClick
-        MsgBox("ok2")
+
+        Dim Table As String
+
+        If Bank = True Then
+            Table = "Bank"
+        Else
+            Table = "Other"
+        End If
+
+        Dim EditTimes As New TimePick
+        EditTimes.TextBox1.Text = sender.tag
+        EditTimes.DataGridView1.DataSource = OverClass.TempDataTable("SELECT StaffID, ID, " &
+        "format(startdate,'HH') AS StartDate1, format(stopdate,'HH') AS StopDate1 FROM " & Table &
+        " WHERE StaffID=" & StaffID & " AND (Format(StartDate,'dd-MMM-yyyy')='" & sender.tag &
+        "' OR format(StopDate,'dd-MMM-yyyy')='" & sender.tag & "')")
+        EditTimes.DataGridView1.Columns("StaffID").Visible = False
+        EditTimes.DataGridView1.Columns("ID").Visible = False
+        Dim clm1 As New DataGridViewComboBoxColumn
+        clm1.HeaderText = "Start Time"
+        'clm1.DataPropertyName = "StartDate1"
+        clm1.Name = "Clm1"
+        Dim clm2 As New DataGridViewComboBoxColumn
+        clm2.HeaderText = "Stop Time"
+        'clm2.DataPropertyName = "StopDate1"
+        clm2.Name = "Clm2"
+        Dim clm3 As New DataGridViewImageColumn
+        clm3.Name = "DeleteRow"
+        clm3.HeaderText = "Delete"
+        clm3.ImageLayout = DataGridViewImageCellLayout.Zoom
+        clm3.Image = My.Resources.Remove
+
+        EditTimes.DataGridView1.Columns.Add(clm1)
+        EditTimes.DataGridView1.Columns.Add(clm2)
+        EditTimes.DataGridView1.Columns.Add(clm3)
+
+        EditTimes.ShowDialog()
+
+
     End Sub
 End Class
